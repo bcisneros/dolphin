@@ -4,7 +4,8 @@ import StockSearch from './components/StockSearch';
 import StockList from './components/StockList';
 import StockGraph from './components/StockGraph';
 
-const socket = new WebSocket('wss://ws.finnhub.io?token=brpd4dnrh5rf069mbr40');
+const apiToken = 'brpd4dnrh5rf069mbr40';
+const socket = new WebSocket(`wss://ws.finnhub.io?token=${apiToken}`);
 
 const getStoredStocks = () => {
   const stocks = window.localStorage.getItem('stocks');
@@ -40,7 +41,7 @@ function App() {
   useEffect(() => {
     const fetchCatalog = async () => {
       const result = await fetch(
-        'https://finnhub.io/api/v1/stock/symbol?exchange=US&token=brpd4dnrh5rf069mbr40'
+        `https://finnhub.io/api/v1/stock/symbol?exchange=US&token=${apiToken}`
       );
       const data = await result.json();
       setStockCatalog(data);
@@ -53,12 +54,13 @@ function App() {
     socket.addEventListener('message', event => {
       const data = JSON.parse(event.data);
       if (data.type === 'trade') {
-        const symbol = data.data[0].s;
+        const stockData = data.data[0];
+        const symbol = stockData.s;
 
         const stock = stockRef.current[`${symbol}`];
 
         if (stock) {
-          stock.price = data.data[0].p;
+          stock.price = stockData.p;
 
           setStocks({ ...stockRef.current, [`${symbol}`]: stock });
         }
