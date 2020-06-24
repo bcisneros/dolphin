@@ -1,8 +1,9 @@
 module.exports = {
+  parser: "babel-eslint",
   plugins: ["react"],
   extends: ["eslint:recommended", "plugin:react/recommended"],
   parserOptions: {
-    ecmaVersion: 6,
+    ecmaVersion: 7,
     sourceType: "module",
     ecmaFeatures: {
       jsx: true
@@ -17,7 +18,8 @@ module.exports = {
   },
   settings: {
     react: {
-      version: "16.13.1"
+      pragma: "React",
+      version: "0.14.8"
     }
   }
 };
