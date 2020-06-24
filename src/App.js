@@ -24,7 +24,6 @@ const initialStocks = [
 
 function App() {
   const handleSearch = symbol => {
-    console.log(symbol);
     setStocks([
       ...stocks,
       { symbol, description: symbol, displaySymbol: symbol },
