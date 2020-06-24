@@ -4,18 +4,13 @@ import StockSearch from './components/StockSearch';
 import StockList from './components/StockList';
 import StockGraph from './components/StockGraph';
 
-const initialStocks = [
-  {
-    description: 'AGILENT TECHNOLOGIES INC',
-    displaySymbol: 'A',
-    symbol: 'A',
-  },
-  {
-    description: 'ALCOA CORP',
-    displaySymbol: 'AA',
-    symbol: 'AA',
-  },
-];
+const getStoredStocks = () => {
+  const stocks = window.localStorage.getItem('stocks');
+
+  if (stocks) return JSON.parse(stocks);
+
+  return [];
+};
 
 function App() {
   const handleSearch = symbol => {
@@ -32,25 +27,22 @@ function App() {
   const [stockCatalog, setStockCatalog] = useState([]);
 
   useEffect(() => {
-    setStockCatalog([
-      {
-        description: 'AGILENT TECHNOLOGIES INC',
-        displaySymbol: 'A',
-        symbol: 'A',
-      },
-      {
-        description: 'ALCOA CORP',
-        displaySymbol: 'AA',
-        symbol: 'AA',
-      },
-      {
-        description: 'PERTH MINT PHYSICAL GOLD ETF',
-        displaySymbol: 'AAAU',
-        symbol: 'AAAU',
-      },
-    ]);
+    const fetchCatalog = async () => {
+      const result = await fetch(
+        'https://finnhub.io/api/v1/stock/symbol?exchange=US&token=brpd4dnrh5rf069mbr40'
+      );
+      const data = await result.json();
+      setStockCatalog(data);
+    };
+
+    fetchCatalog();
+    const initialStocks = getStoredStocks();
     setStocks(initialStocks);
   }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem('stocks', JSON.stringify(stocks));
+  }, [stocks]);
 
   return (
     <div className="App">
