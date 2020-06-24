@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import StockDetail from './StockDetail';
 
 const StockList = ({ stocks }) => {
   return (
@@ -7,7 +8,7 @@ const StockList = ({ stocks }) => {
       <h2>Stock List</h2>
 
       {stocks.map(stock => (
-        <div key={stock.symbol}>{stock.description}</div>
+        <StockDetail stock={stock} key={stock.symbol} />
       ))}
     </div>
   );
