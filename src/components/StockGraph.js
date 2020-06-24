@@ -1,7 +1,11 @@
 import React from 'react';
 
 const StockGraph = () => {
-  return <div>Stock Graph</div>;
+  return (
+    <div>
+      <h2>Stock Graph</h2>
+    </div>
+  );
 };
 
 export default StockGraph;
