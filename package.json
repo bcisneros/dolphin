@@ -13,7 +13,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
+    "lint": "eslint . && prettier-eslint --list-different **/*.js",
+    "format": "prettier-eslint --write **/*.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -32,7 +34,15 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.10.3",
+    "@babel/preset-env": "^7.10.3",
+    "@babel/preset-react": "^7.10.1",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^26.0.1",
     "eslint": "^7.3.0",
-    "eslint-plugin-jest": "^23.16.0"
+    "eslint-plugin-jest": "^23.16.0",
+    "eslint-plugin-react": "^7.20.0",
+    "jest": "^26.0.1",
+    "prettier-eslint-cli": "^5.0.0"
   }
 }
