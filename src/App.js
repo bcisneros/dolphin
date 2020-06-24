@@ -15,23 +15,40 @@ const initialStocks = [
     displaySymbol: 'AA',
     symbol: 'AA',
   },
-  {
-    description: 'PERTH MINT PHYSICAL GOLD ETF',
-    displaySymbol: 'AAAU',
-    symbol: 'AAAU',
-  },
 ];
 
 function App() {
   const handleSearch = symbol => {
-    setStocks([
-      ...stocks,
-      { symbol, description: symbol, displaySymbol: symbol },
-    ]);
+    const stock = stockCatalog
+      .filter(stock => !stocks.map(s => s.symbol).includes(stock.symbol))
+      .find(stock => stock.symbol === symbol);
+
+    if (stock) {
+      setStocks([...stocks, stock]);
+    }
   };
+
   const [stocks, setStocks] = useState([]);
+  const [stockCatalog, setStockCatalog] = useState([]);
 
   useEffect(() => {
+    setStockCatalog([
+      {
+        description: 'AGILENT TECHNOLOGIES INC',
+        displaySymbol: 'A',
+        symbol: 'A',
+      },
+      {
+        description: 'ALCOA CORP',
+        displaySymbol: 'AA',
+        symbol: 'AA',
+      },
+      {
+        description: 'PERTH MINT PHYSICAL GOLD ETF',
+        displaySymbol: 'AAAU',
+        symbol: 'AAAU',
+      },
+    ]);
     setStocks(initialStocks);
   }, []);
 
