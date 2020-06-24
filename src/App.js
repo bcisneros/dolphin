@@ -5,6 +5,9 @@ import StockList from './components/StockList';
 import StockGraph from './components/StockGraph';
 
 function App() {
+  const handleSearch = symbol => {
+    console.log(symbol);
+  };
   const [stocks, setStocks] = useState([]);
 
   useEffect(() => {
@@ -30,7 +33,7 @@ function App() {
   return (
     <div className="App">
       <h1>Dolphin</h1>
-      <StockSearch />
+      <StockSearch onSearch={handleSearch} />
       <StockList stocks={stocks} />
       <StockGraph />
     </div>
