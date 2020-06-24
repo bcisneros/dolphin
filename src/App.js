@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import StockSearch from './components/StockSearch';
 import StockList from './components/StockList';
@@ -11,23 +11,30 @@ const getStoredStocks = () => {
 
   if (stocks) return JSON.parse(stocks);
 
-  return [];
+  return {};
 };
 
 function App() {
+  const [stocks, _setStocks] = useState({});
+
+  const stockRef = useRef(stocks);
+  const setStocks = data => {
+    stockRef.current = data;
+    _setStocks(data);
+  };
+
   const handleSearch = symbol => {
     const stock = stockCatalog
-      .filter(stock => !stocks.map(s => s.symbol).includes(stock.symbol))
+      .filter(stock => stocks[stock.symbol] === undefined)
       .find(stock => stock.symbol === symbol);
 
     if (stock) {
-      setStocks([...stocks, stock]);
-      console.log('Subscribing...');
+      setStocks({ ...stocks, [`${symbol}`]: stock });
+
       socket.send(JSON.stringify({ type: 'subscribe', symbol }));
     }
   };
 
-  const [stocks, setStocks] = useState([]);
   const [stockCatalog, setStockCatalog] = useState([]);
 
   useEffect(() => {
@@ -43,15 +50,17 @@ function App() {
     const initialStocks = getStoredStocks();
     setStocks(initialStocks);
 
-    socket.addEventListener('message', function(event) {
+    socket.addEventListener('message', event => {
       const data = JSON.parse(event.data);
       if (data.type === 'trade') {
-        console.log(data);
-        const symbol = data.data.s;
-        const stock = stocks.find(s => s.symbol === symbol);
+        const symbol = data.data[0].s;
+
+        const stock = stockRef.current[`${symbol}`];
 
         if (stock) {
-          stock.price = data.data.p;
+          stock.price = data.data[0].p;
+
+          setStocks({ ...stockRef.current, [`${symbol}`]: stock });
         }
       }
     });
@@ -61,11 +70,13 @@ function App() {
     window.localStorage.setItem('stocks', JSON.stringify(stocks));
   }, [stocks]);
 
+  const stockList = Object.keys(stocks).map(k => stocks[k]);
+
   return (
     <div className="App">
       <h1>Dolphin</h1>
       <StockSearch onSearch={handleSearch} />
-      <StockList stocks={stocks} />
+      <StockList stocks={stockList} />
       <StockGraph />
     </div>
   );
