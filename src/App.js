@@ -4,6 +4,8 @@ import StockSearch from './components/StockSearch';
 import StockList from './components/StockList';
 import StockGraph from './components/StockGraph';
 
+const socket = new WebSocket('wss://ws.finnhub.io?token=brpd4dnrh5rf069mbr40');
+
 const getStoredStocks = () => {
   const stocks = window.localStorage.getItem('stocks');
 
@@ -20,6 +22,8 @@ function App() {
 
     if (stock) {
       setStocks([...stocks, stock]);
+      console.log('Subscribing...');
+      socket.send(JSON.stringify({ type: 'subscribe', symbol }));
     }
   };
 
@@ -38,6 +42,19 @@ function App() {
     fetchCatalog();
     const initialStocks = getStoredStocks();
     setStocks(initialStocks);
+
+    socket.addEventListener('message', function(event) {
+      const data = JSON.parse(event.data);
+      if (data.type === 'trade') {
+        console.log(data);
+        const symbol = data.data.s;
+        const stock = stocks.find(s => s.symbol === symbol);
+
+        if (stock) {
+          stock.price = data.data.p;
+        }
+      }
+    });
   }, []);
 
   useEffect(() => {

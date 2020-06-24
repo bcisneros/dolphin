@@ -10,7 +10,9 @@ const stockStyle = {
 const StockDetail = ({ stock }) => {
   return (
     <div style={stockStyle}>
-      <h3>{stock.displaySymbol}</h3>
+      <h3>
+        {stock.displaySymbol} ({stock.price || 0})
+      </h3>
       {stock.description}
     </div>
   );
